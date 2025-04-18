@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { calculateHours } from "../utils/index"
-import { DayEntry } from '../models/DayEntryModel'
+import { DayEntry } from '../models/DayModel'
 import { daysOfWeek } from '../utils/constants'
 
 export default function HoursDashboard() {

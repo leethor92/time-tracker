@@ -1,3 +1,18 @@
+import { WeeklyEntry } from "../models/WeekModel";
+
+// Function to format date to "YYYY-MM-DD"
+export function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+// Helper function to calculate total hours for a week
+export function calculateTotalHoursForWeek(week: WeeklyEntry): number {
+  return Object.values(week.hours).reduce((total, day) => total + day.total, 0);
+}
+
 export const calculateHours = (start: string, end: string, breakMinutes: number): number => {
   if (!start || !end) return 0;
 
