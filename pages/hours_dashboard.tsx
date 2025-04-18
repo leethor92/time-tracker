@@ -54,7 +54,7 @@ export default function HoursDashboard() {
               <td className="border border-amber-400 px-4 py-2">
                 <input
                   type="number"
-                  value={hours[day].break}
+                  value={hours[day].break === 0 ? "" : hours[day].break}
                   min="0"
                   className="border border-amber-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-300 rounded p-1 w-20"
                   onChange={e => handleChange(day, "break", e.target.value)}
