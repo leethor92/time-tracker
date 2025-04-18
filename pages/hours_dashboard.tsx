@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { calculateHours } from "../utils/index"
 
 const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -21,16 +22,6 @@ export default function HoursDashboard() {
     };
     updatedDay.total = calculateHours(updatedDay.start, updatedDay.end, updatedDay.break);
     setHours(prev => ({ ...prev, [day]: updatedDay }));
-  };
-
-  const calculateHours = (start: string, end: string, breakMinutes: number): number => {
-    if (!start || !end) return 0;
-    const [sh, sm] = start.split(":").map(Number);
-    const [eh, em] = end.split(":").map(Number);
-    const startMinutes = sh * 60 + sm;
-    const endMinutes = eh * 60 + em;
-    const diff = endMinutes - startMinutes - breakMinutes;
-    return diff > 0 ? parseFloat((diff / 60).toFixed(2)) : 0;
   };
 
   const weeklyTotal = Object.values(hours).reduce((sum, day) => sum + day.total, 0);
