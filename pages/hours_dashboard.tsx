@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { calculateHours } from "../utils/index"
-
-const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-type DayEntry = {
-  start: string;
-  end: string;
-  break: number;
-  total: number;
-};
+import { DayEntry } from '../models/DayEntryModel'
+import { daysOfWeek } from '../utils/constants'
 
 export default function HoursDashboard() {
   const [hours, setHours] = useState<Record<string, DayEntry>>(
