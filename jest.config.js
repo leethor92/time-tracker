@@ -1,12 +1,16 @@
-/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-    preset: 'ts-jest',
-    testEnvironment: 'jsdom',
-    moduleNameMapper: {
-      '^@/(.*)$': '<rootDir>/$1',
+  preset: 'ts-jest',
+  testEnvironment: 'jsdom',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  transform: {
+    '^.+\\.(ts|tsx|js|jsx)$': 'babel-jest',
+  },
+  globals: {
+    'ts-jest': {
+      tsconfig: '<rootDir>/tsconfig.jest.json',
     },
-    transform: {
-      '^.+\\.tsx?$': 'ts-jest',
-    },
-    testMatch: ['**/__tests__/**/*.test.ts?(x)'],
-  };
+  },
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1', // Matches your path alias config
+  },
+};
