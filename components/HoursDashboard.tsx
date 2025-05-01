@@ -33,11 +33,11 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
   const weeklyTotal = Object.values(hours).reduce((sum, day) => sum + day.total, 0);
 
   return (
-    <div className="p-8 bg-orange-50 min-h-screen text-slate-800">
-      <h1 className="text-3xl font-bold mb-6 text-orange-600">Hours Dashboard</h1>
+    <div className="p-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen text-white">
+      <h1 className="text-3xl font-bold mb-6 text-center">Hours Dashboard</h1>
       <table className="table-auto w-full border-collapse border border-amber-400 shadow-md">
         <thead>
-          <tr className="bg-orange-500 text-white font-bold">
+          <tr className="bg-indigo-600 text-white font-bold">
             <th className="border border-amber-400 px-4 py-2 text-left">Day</th>
             <th className="border border-amber-400 px-4 py-2 text-left">Start</th>
             <th className="border border-amber-400 px-4 py-2 text-left">Break (mins)</th>
@@ -47,14 +47,17 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
         </thead>
         <tbody>
           {daysOfWeek.map((day, index) => (
-            <tr key={day} className={index % 2 === 0 ? "bg-orange-100" : "bg-amber-100"}>
+            <tr
+              key={day}
+              className={`${index % 2 === 0 ? "bg-indigo-100" : "bg-purple-100"} text-gray-900`} // Adjusted text color for better contrast
+            >
               <td className="border border-amber-400 px-4 py-2">{day}</td>
               <td className="border border-amber-400 px-4 py-2">
                 <input
                   type="time"
                   value={hours[day].start}
                   onChange={e => handleChange(day, "start", e.target.value)}
-                  className="border border-amber-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-300 rounded p-1"
+                  className="border border-amber-400 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-300 rounded p-1"
                 />
               </td>
               <td className="border border-amber-400 px-4 py-2">
@@ -62,7 +65,7 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
                   type="number"
                   value={hours[day].break === 0 ? "" : hours[day].break}
                   min="0"
-                  className="border border-amber-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-300 rounded p-1 w-20"
+                  className="border border-amber-400 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-300 rounded p-1 w-20"
                   onChange={e => handleChange(day, "break", e.target.value)}
                 />
               </td>
@@ -71,7 +74,7 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
                   type="time"
                   value={hours[day].end}
                   onChange={e => handleChange(day, "end", e.target.value)}
-                  className="border border-amber-400 focus:border-orange-400 focus:ring-1 focus:ring-orange-300 rounded p-1"
+                  className="border border-amber-400 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-300 rounded p-1"
                 />
               </td>
               <td className="border border-amber-400 px-4 py-2">
@@ -79,7 +82,7 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
               </td>
             </tr>
           ))}
-          <tr className="font-bold bg-emerald-100 text-emerald-800">
+          <tr className="font-bold bg-indigo-200 text-indigo-800">
             <td colSpan={4} className="border border-amber-400 px-4 py-2 text-right">
               Weekly Total
             </td>
