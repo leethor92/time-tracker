@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import HoursDashboard from '../../components/HoursDashboard';
 
 export default function WeekDetails() {
