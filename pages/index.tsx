@@ -1,4 +1,4 @@
-import Link from "next/link";
+import React from "react";
 import WeeklyDashboard from '../pages/weekly_dashboard';  // Adjust the path as needed
 
 export default function Home() {
