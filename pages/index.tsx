@@ -1,4 +1,5 @@
 import Link from "next/link";
+import WeeklyDashboard from '../pages/weekly_dashboard';  // Adjust the path as needed
 
 export default function Home() {
   return (
@@ -12,6 +13,11 @@ export default function Home() {
         >
           Go to Hours Dashboard
         </Link>
+      </div>
+
+      {/* Add WeeklyDashboard below */}
+      <div className="mt-10 w-full max-w-4xl mx-auto">
+        <WeeklyDashboard />
       </div>
     </main>
   );

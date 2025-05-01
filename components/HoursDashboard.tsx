@@ -1,20 +1,33 @@
-import { useState } from "react";
-import { calculateHours } from "../utils/index"
-import { DayEntry } from '../models/DayModel'
-import { daysOfWeek } from '../utils/constants'
+import React, { useState } from "react";
+import { DayEntry } from "../models/DayModel";  // Import DayEntry
+import { WeekEntry } from "../models/WeekModel";  // Import WeekEntry
+import { daysOfWeek } from "../utils/constants";  // Ensure you have this constant
 
-export default function HoursDashboard() {
-  const [hours, setHours] = useState<Record<string, DayEntry>>(
-    Object.fromEntries(daysOfWeek.map(day => [day, { start: "", end: "", break: 0, total: 0 }]))
-  );
+interface HoursDashboardProps {
+  weekData: WeekEntry;  // Expect WeekEntry type
+}
+
+export default function HoursDashboard({ weekData }: HoursDashboardProps) {
+  const [hours, setHours] = useState<Record<string, DayEntry>>(weekData.hours);  // Initialize state with weekData.hours
 
   const handleChange = (day: string, field: "start" | "end" | "break", value: string) => {
     const updatedDay = {
       ...hours[day],
-      [field]: field === "break" ? parseInt(value || "0") : value
+      [field]: field === "break" ? parseInt(value || "0") : value,  // Correct handling of break field as number
     };
-    updatedDay.total = calculateHours(updatedDay.start, updatedDay.end, updatedDay.break);
+
+    // Recalculate the total based on the start, end, and break values
+    updatedDay.total = calculateTotal(updatedDay.start, updatedDay.end, updatedDay.break);
+
+    // Update the state
     setHours(prev => ({ ...prev, [day]: updatedDay }));
+  };
+
+  const calculateTotal = (start: string, end: string, breakMinutes: number): number => {
+    const startDate = new Date(`1970-01-01T${start}:00Z`);
+    const endDate = new Date(`1970-01-01T${end}:00Z`);
+    const diff = (endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60);  // Total in hours
+    return Math.max(0, diff - breakMinutes / 60);  // Subtract break time in hours
   };
 
   const weeklyTotal = Object.values(hours).reduce((sum, day) => sum + day.total, 0);
