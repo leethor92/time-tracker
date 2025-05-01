@@ -24,13 +24,13 @@ export default function WeeklyDashboard() {
           return (
             <li
               key={week.id}
-              className="bg-white p-4 rounded shadow hover:bg-slate-100"
+              className="bg-blue-50 p-4 rounded-lg shadow-md hover:bg-blue-200 transition-colors duration-300"
             >
               <Link href={`/week/${week.id}`}>
-                <h2 className="text-lg font-semibold">
+                <h2 className="text-xl font-semibold text-blue-800">
                   Week of {week.weekStart}
                 </h2>
-                <p>Total Hours: {weeklyTotal.toFixed(2)}</p>
+                <p className="text-blue-600">Total Hours: {weeklyTotal.toFixed(2)}</p>
               </Link>
             </li>
           );
