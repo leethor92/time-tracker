@@ -1,18 +1,15 @@
 import React, { useState } from "react";
 import { DayEntry } from "../models/DayModel";
-import { WeekEntry } from "../models/WeekModel";
+import { WeekEntry, calculateWeeklyNetPay } from "../models/WeekModel";
 import { daysOfWeek } from "../utils/constants";
 
 interface HoursDashboardProps {
   weekData: WeekEntry;
 }
-const TAX_RATE = 0.1503; // 15% tax rate
 
 export default function HoursDashboard({ weekData }: HoursDashboardProps) {
   const [hours, setHours] = useState<Record<string, DayEntry>>(weekData.hours);
-  const [hourlyRates, setHourlyRates] = useState<Record<string, number>>(
-    Object.fromEntries(daysOfWeek.map(day => [day, 0]))
-  );
+  const [hourlyRates, setHourlyRates] = useState<Record<string, number>>(weekData.hourlyRates);
 
   const handleChange = (day: string, field: "start" | "end" | "break", value: string) => {
     const updatedDay = {
@@ -37,10 +34,7 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
   };
 
   const weeklyTotalHours = Object.values(hours).reduce((sum, day) => sum + day.total, 0);
-  const weeklyTotalPay = daysOfWeek.reduce(
-    (sum, day) => sum + (hourlyRates[day] * hours[day].total),
-    0
-  );
+  const weeklyNetPay = calculateWeeklyNetPay(hours, hourlyRates); // Use the imported function
 
   return (
     <div className="p-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen text-white">
@@ -64,8 +58,8 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
             const rate = hourlyRates[day];
             const totalHours = hours[day].total;
             const dailyPay = rate * totalHours;
-            const tax = dailyPay * TAX_RATE;
-            const netPay = dailyPay - tax; // Calculate net pay here
+            const tax = dailyPay * 0.1503;
+            const netPay = dailyPay - tax;
 
             return (
               <tr
@@ -108,7 +102,7 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
                   />
                 </td>
                 <td className="border border-amber-400 px-4 py-2">${tax.toFixed(2)}</td>
-                <td className="border border-amber-400 px-4 py-2">${netPay.toFixed(2)}</td> {/* Show net pay */}
+                <td className="border border-amber-400 px-4 py-2">${netPay.toFixed(2)}</td>
               </tr>
             );
           })}
@@ -117,8 +111,8 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
               Weekly Total
             </td>
             <td className="border border-amber-400 px-4 py-2">{weeklyTotalHours.toFixed(2)}</td>
-            <td className="border border-amber-400 px-4 py-2" colSpan={2}>Total Net Pay</td> {/* Total Net Pay */}
-            <td className="border border-amber-400 px-4 py-2">${(weeklyTotalPay - (weeklyTotalPay * TAX_RATE)).toFixed(2)}</td>
+            <td className="border border-amber-400 px-4 py-2" colSpan={2}>Total Net Pay</td>
+            <td className="border border-amber-400 px-4 py-2">${weeklyNetPay.toFixed(2)}</td>
           </tr>
         </tbody>
       </table>

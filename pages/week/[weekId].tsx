@@ -37,7 +37,16 @@ export default function WeekDetails() {
         Friday: { start: "", end: "", break: 0, total: 8 },
         Saturday: { start: "", end: "", break: 0, total: 0 },
         Sunday: { start: "", end: "", break: 0, total: 0 }
-      }
+      },
+      hourlyRates: {
+        Monday: 30,
+        Tuesday: 30,
+        Wednesday: 30,
+        Thursday: 30,
+        Friday: 30,
+        Saturday: 30,
+        Sunday: 30,
+      },
     },
     { 
       id: "2", 
@@ -50,7 +59,16 @@ export default function WeekDetails() {
         Friday: { start: "", end: "", break: 0, total: 8 },
         Saturday: { start: "", end: "", break: 0, total: 0 },
         Sunday: { start: "", end: "", break: 0, total: 0 }
-      }
+      },
+      hourlyRates: {
+        Monday: 30,
+        Tuesday: 30,
+        Wednesday: 30,
+        Thursday: 30,
+        Friday: 30,
+        Saturday: 30,
+        Sunday: 30,
+      },
     },
   ];
 

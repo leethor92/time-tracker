@@ -15,6 +15,15 @@ const mockWeekData: WeekEntry = {
     Saturday: { start: "09:00", end: "17:00", break: 60, total: 7 },
     Sunday: { start: "09:00", end: "17:00", break: 60, total: 7 },
   },
+  hourlyRates: {
+    Monday: 30,
+    Tuesday: 30,
+    Wednesday: 30,
+    Thursday: 30,
+    Friday: 30,
+    Saturday: 30,
+    Sunday: 30,
+  },
 };
 
 describe("HoursDashboard", () => {
