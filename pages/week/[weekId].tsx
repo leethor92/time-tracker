@@ -1,34 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 import HoursDashboard from '../../components/HoursDashboard';
+import { WeekEntry } from '../../models/WeekModel'; // Assuming this is your WeekEntry type
 
 export default function WeekDetails() {
-  const router = useRouter();
-  const { weekId } = router.query;
-
-  // State to store the resolved weekId and the weekData
-  const [resolvedWeekId, setResolvedWeekId] = useState<string | undefined>(undefined);
-
-  // State to manage loading and data fetching
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    // Check if the query has been populated and is a valid string
-    if (weekId && typeof weekId === 'string') {
-      setResolvedWeekId(weekId); // Set the resolved weekId
-      setLoading(false); // Mark loading as complete
-    }
-  }, [weekId]); // This will run again whenever `weekId` changes
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  // Sample weekly data
-  const weeklyData = [
-    { 
-      id: "1", 
-      weekStart: "2024-04-29", 
+  // Local state to hold week data (hardcoded for now)
+  const [weekData, setWeekData] = useState<WeekEntry | null>(null);
+  
+  // Hardcoded week data for demonstration
+  const weeklyData: WeekEntry[] = [
+    {
+      id: "1",
+      weekStart: "2024-04-29",
       hours: {
         Monday: { start: "", end: "", break: 0, total: 8 },
         Tuesday: { start: "", end: "", break: 0, total: 7 },
@@ -36,7 +18,7 @@ export default function WeekDetails() {
         Thursday: { start: "", end: "", break: 0, total: 7 },
         Friday: { start: "", end: "", break: 0, total: 8 },
         Saturday: { start: "", end: "", break: 0, total: 0 },
-        Sunday: { start: "", end: "", break: 0, total: 0 }
+        Sunday: { start: "", end: "", break: 0, total: 0 },
       },
       hourlyRates: {
         Monday: 30,
@@ -48,9 +30,9 @@ export default function WeekDetails() {
         Sunday: 30,
       },
     },
-    { 
-      id: "2", 
-      weekStart: "2024-05-06", 
+    {
+      id: "2",
+      weekStart: "2024-05-06",
       hours: {
         Monday: { start: "", end: "", break: 0, total: 8 },
         Tuesday: { start: "", end: "", break: 0, total: 7 },
@@ -58,7 +40,7 @@ export default function WeekDetails() {
         Thursday: { start: "", end: "", break: 0, total: 7 },
         Friday: { start: "", end: "", break: 0, total: 8 },
         Saturday: { start: "", end: "", break: 0, total: 0 },
-        Sunday: { start: "", end: "", break: 0, total: 0 }
+        Sunday: { start: "", end: "", break: 0, total: 0 },
       },
       hourlyRates: {
         Monday: 30,
@@ -72,15 +54,30 @@ export default function WeekDetails() {
     },
   ];
 
-  // Find the week data by id (or other unique identifier)
-  const weekData = weeklyData.find((week) => week.id === resolvedWeekId);
+  // Simulate the selection of a week (for example, from a list of weeks)
+  useEffect(() => {
+    // Hardcoded for now, you can modify it as needed
+    const fetchedWeekData = weeklyData.find((week) => week.id === "1"); // You can replace with any logic to choose the week
+    if (fetchedWeekData) {
+      setWeekData(fetchedWeekData);
+    }
+  }, []);
 
-  if (!weekData) return <p>Week not found</p>;
+  // Handle saving updated week data
+  const handleSave = (updatedWeekData: WeekEntry) => {
+    setWeekData(updatedWeekData);
+    // For now, log it to the console. Later you can replace this with an API call to persist the data
+    console.log('Week data saved', updatedWeekData);
+  };
+
+  if (!weekData) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Week Details: {weekData.weekStart}</h1>
-      <HoursDashboard weekData={weekData} />
+      <HoursDashboard weekData={weekData} onSave={handleSave} />
     </div>
   );
 }

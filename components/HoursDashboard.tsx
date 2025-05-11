@@ -5,9 +5,10 @@ import { daysOfWeek } from "../utils/constants";
 
 interface HoursDashboardProps {
   weekData: WeekEntry;
+  onSave: (week: WeekEntry) => void;
 }
 
-export default function HoursDashboard({ weekData }: HoursDashboardProps) {
+export default function HoursDashboard({ weekData, onSave }: HoursDashboardProps) {
   const [hours, setHours] = useState<Record<string, DayEntry>>(weekData.hours);
   const [hourlyRates, setHourlyRates] = useState<Record<string, number>>(weekData.hourlyRates);
 
@@ -24,6 +25,10 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
   const handleRateChange = (day: string, value: string) => {
     const rate = parseFloat(value) || 0;
     setHourlyRates(prev => ({ ...prev, [day]: rate }));
+  };
+
+  const handleSaveClick = () => {
+    onSave(weekData);
   };
 
   const calculateTotal = (start: string, end: string, breakMinutes: number): number => {
@@ -116,6 +121,12 @@ export default function HoursDashboard({ weekData }: HoursDashboardProps) {
           </tr>
         </tbody>
       </table>
+      <button
+      onClick={handleSaveClick}
+      className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500"
+    >
+      💾 Save Week
+    </button>
     </div>
   );
 }
