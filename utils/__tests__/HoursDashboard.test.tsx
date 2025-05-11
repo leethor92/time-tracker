@@ -27,8 +27,10 @@ const mockWeekData: WeekEntry = {
 };
 
 describe("HoursDashboard", () => {
+  const mockOnSave = jest.fn()
+
     it("should render the HoursDashboard component with the correct data", () => {
-      render(<HoursDashboard weekData={mockWeekData} />);
+      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
   
       // Check if the table rows for each day are rendered
       const mondayRow = screen.getByText(/Monday/i);
@@ -40,7 +42,7 @@ describe("HoursDashboard", () => {
     });
   
     it("should update the hours when the start time is changed", () => {
-      render(<HoursDashboard weekData={mockWeekData} />);
+      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
   
       // Find the start time input for Monday
       const startTimeInput = screen.getByRole('row', { name: /Monday/i }).querySelector("input[type='time']");
@@ -52,7 +54,7 @@ describe("HoursDashboard", () => {
     });
   
     it("should update the break time and recalculate the total hours", () => {
-      render(<HoursDashboard weekData={mockWeekData} />);
+      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
   
       // Change break time for Monday
       const breakInput = screen.getByRole('row', { name: /Monday/i }).querySelector("input[type='number']");
@@ -64,7 +66,7 @@ describe("HoursDashboard", () => {
     });
   
     it("should calculate the weekly total correctly", () => {
-      render(<HoursDashboard weekData={mockWeekData} />);
+      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
   
       // Verify the weekly total calculation is correct (should be 7 * 7 = 49 hours initially)
       const weeklyTotal = screen.getByText(/49.00/);
@@ -72,7 +74,7 @@ describe("HoursDashboard", () => {
     });
   
     it("should update the weekly total when changes are made", () => {
-      render(<HoursDashboard weekData={mockWeekData} />);
+      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
   
       // Change break time for Monday
       const breakInput = screen.getByRole('row', { name: /Monday/i }).querySelector("input[type='number']");
