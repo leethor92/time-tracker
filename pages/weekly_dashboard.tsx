@@ -1,10 +1,54 @@
 import Link from "next/link";
 import React from "react";
+import { calculateWeeklyNetPay } from "../models/WeekModel";
 
 export default function WeeklyDashboard() {
+  // Sample weekly data
   const weeklyData = [
-    { id: 1, weekStart: "2024-04-29", hours: { Monday: { total: 8 }, Tuesday: { total: 7 }, Wednesday: { total: 8 }, Thursday: { total: 7 }, Friday: { total: 8 } } },
-    { id: 2, weekStart: "2024-05-06", hours: { Monday: { total: 8 }, Tuesday: { total: 7 }, Wednesday: { total: 8 }, Thursday: { total: 7 }, Friday: { total: 8 } } },
+    {
+      id: 1,
+      weekStart: "2024-04-29",
+      hours: {
+        Monday: { start: "", end: "", break: 0, total: 8 },
+        Tuesday: { start: "", end: "", break: 0, total: 7 },
+        Wednesday: { start: "", end: "", break: 0, total: 8 },
+        Thursday: { start: "", end: "", break: 0, total: 7 },
+        Friday: { start: "", end: "", break: 0, total: 8 },
+        Saturday: { start: "", end: "", break: 0, total: 0 },
+        Sunday: { start: "", end: "", break: 0, total: 0 }
+      },
+      hourlyRates: {
+        Monday: 30,
+        Tuesday: 30,
+        Wednesday: 30,
+        Thursday: 30,
+        Friday: 30,
+        Saturday: 30,
+        Sunday: 30
+      }
+    },
+    {
+      id: 2,
+      weekStart: "2024-05-06",
+      hours: {
+        Monday: { start: "", end: "", break: 0, total: 8 },
+        Tuesday: { start: "", end: "", break: 0, total: 7 },
+        Wednesday: { start: "", end: "", break: 0, total: 8 },
+        Thursday: { start: "", end: "", break: 0, total: 7 },
+        Friday: { start: "", end: "", break: 0, total: 8 },
+        Saturday: { start: "", end: "", break: 0, total: 0 },
+        Sunday: { start: "", end: "", break: 0, total: 0 }
+      },
+      hourlyRates: {
+        Monday: 30,
+        Tuesday: 30,
+        Wednesday: 30,
+        Thursday: 30,
+        Friday: 30,
+        Saturday: 30,
+        Sunday: 30
+      }
+    }
   ];
 
   return (
@@ -22,6 +66,10 @@ export default function WeeklyDashboard() {
             (sum, day) => sum + day.total,
             0
           );
+
+          // Calculate net total pay for the week
+          const netTotalPay = calculateWeeklyNetPay(week.hours, week.hourlyRates);
+
           return (
             <li
               key={week.id}
@@ -32,6 +80,9 @@ export default function WeeklyDashboard() {
                   Week of {week.weekStart}
                 </h2>
                 <p className="text-blue-600">Total Hours: {weeklyTotal.toFixed(2)}</p>
+                <p className="text-blue-600">
+                  Net Total Pay: ${netTotalPay.toFixed(2)}
+                </p>
               </Link>
             </li>
           );
