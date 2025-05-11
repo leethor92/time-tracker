@@ -10,7 +10,6 @@ jest.mock('next/router', () => ({
 }));
 
 describe('WeekDetails', () => {
-
   it('should display week details when a valid weekId is provided', async () => {
     // Mock the router to simulate a valid `weekId`
     (useRouter as jest.Mock).mockReturnValue({
