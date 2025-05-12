@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import { createEmptyWeek } from '../../models/WeekModel';
 import HoursDashboard from '../../components/HoursDashboard';
 
@@ -13,10 +14,15 @@ export default function NewWeekPage() {
   // Local state to hold the week data for saving
   const [weekData, setWeekData] = useState(emptyWeek);
 
-  const handleSave = (updatedWeekData: typeof weekData) => {
+  const handleSave = async (updatedWeekData: typeof weekData) => {
     setWeekData(updatedWeekData);
-    // Add logic to persist the data (e.g., API call, local storage, etc.)
-    console.log('Week data saved', updatedWeekData);
+  
+    try {
+      const response = await axios.post('/api/weeks', updatedWeekData);
+      console.log('Week created successfully:', response.data);
+    } catch (error) {
+      console.error('Error saving new week data:', error);
+    }
   };
 
   return (

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from "axios"
 import HoursDashboard from '../../components/HoursDashboard';
 import { WeekEntry } from '../../models/WeekModel'; // Assuming this is your WeekEntry type
 
@@ -64,10 +65,14 @@ export default function WeekDetails() {
   }, []);
 
   // Handle saving updated week data
-  const handleSave = (updatedWeekData: WeekEntry) => {
+  const handleSave = async (updatedWeekData: WeekEntry) => {
     setWeekData(updatedWeekData);
-    // For now, log it to the console. Later you can replace this with an API call to persist the data
-    console.log('Week data saved', updatedWeekData);
+    try {
+      const response = await axios.put(`/api/weeks/${updatedWeekData.id}`, updatedWeekData);
+      console.log('Week updated successfully:', response.data);
+    } catch (error) {
+      console.error('Error updating week data:', error);
+    }
   };
 
   if (!weekData) {

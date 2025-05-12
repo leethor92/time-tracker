@@ -5,6 +5,7 @@ import { WeekEntry } from "../../models/WeekModel"; // Adjust imports based on y
 
 // Mock data for the weekData prop
 const mockWeekData: WeekEntry = {
+  id: "1",
   weekStart: "2024-04-29",
   hours: {
     Monday: { start: "09:00", end: "17:00", break: 60, total: 7 },

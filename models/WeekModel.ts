@@ -1,6 +1,7 @@
 import { DayEntry } from './DayModel';
 
 export interface WeekEntry {
+  id?: string;
   weekStart: string; // Week start date in "YYYY-MM-DD" format
   hours: Record<string, DayEntry>; // Keyed by day of the week
   hourlyRates: Record<string, number>; // Keyed by day of the week with hourly rates
