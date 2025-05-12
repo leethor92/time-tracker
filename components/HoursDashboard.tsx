@@ -28,7 +28,12 @@ export default function HoursDashboard({ weekData, onSave }: HoursDashboardProps
   };
 
   const handleSaveClick = () => {
-    onSave(weekData);
+    const updatedWeek: WeekEntry = {
+      ...weekData,
+      hours,
+      hourlyRates,
+    };
+    onSave(updatedWeek);
   };
 
   const calculateTotal = (start: string, end: string, breakMinutes: number): number => {
@@ -39,7 +44,7 @@ export default function HoursDashboard({ weekData, onSave }: HoursDashboardProps
   };
 
   const weeklyTotalHours = Object.values(hours).reduce((sum, day) => sum + day.total, 0);
-  const weeklyNetPay = calculateWeeklyNetPay(hours, hourlyRates); // Use the imported function
+  const weeklyNetPay = calculateWeeklyNetPay(hours, hourlyRates);
 
   return (
     <div className="p-8 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 min-h-screen text-white">
@@ -70,10 +75,12 @@ export default function HoursDashboard({ weekData, onSave }: HoursDashboardProps
               <tr
                 key={day}
                 className={`${index % 2 === 0 ? "bg-indigo-100" : "bg-purple-100"} text-gray-900`}
+                data-testid={`row-${day}`}
               >
                 <td className="border border-amber-400 px-4 py-2">{day}</td>
                 <td className="border border-amber-400 px-4 py-2">
                   <input
+                    data-testid={`start-${day}`}
                     type="time"
                     value={hours[day].start}
                     onChange={e => handleChange(day, "start", e.target.value)}
@@ -82,6 +89,7 @@ export default function HoursDashboard({ weekData, onSave }: HoursDashboardProps
                 </td>
                 <td className="border border-amber-400 px-4 py-2">
                   <input
+                    data-testid={`break-${day}`}
                     type="number"
                     value={hours[day].break === 0 ? "" : hours[day].break}
                     min="0"
@@ -91,23 +99,31 @@ export default function HoursDashboard({ weekData, onSave }: HoursDashboardProps
                 </td>
                 <td className="border border-amber-400 px-4 py-2">
                   <input
+                    data-testid={`end-${day}`}
                     type="time"
                     value={hours[day].end}
                     onChange={e => handleChange(day, "end", e.target.value)}
                     className="border border-amber-400 rounded p-1"
                   />
                 </td>
-                <td className="border border-amber-400 px-4 py-2">{totalHours.toFixed(2)}</td>
+                <td className="border border-amber-400 px-4 py-2" data-testid={`total-${day}`}>
+                  {totalHours.toFixed(2)}
+                </td>
                 <td className="border border-amber-400 px-4 py-2">
                   <input
+                    data-testid={`rate-${day}`}
                     type="number"
                     value={rate}
                     onChange={e => handleRateChange(day, e.target.value)}
                     className="border border-amber-400 rounded p-1 w-24"
                   />
                 </td>
-                <td className="border border-amber-400 px-4 py-2">${tax.toFixed(2)}</td>
-                <td className="border border-amber-400 px-4 py-2">${netPay.toFixed(2)}</td>
+                <td className="border border-amber-400 px-4 py-2" data-testid={`tax-${day}`}>
+                  ${tax.toFixed(2)}
+                </td>
+                <td className="border border-amber-400 px-4 py-2" data-testid={`net-${day}`}>
+                  ${netPay.toFixed(2)}
+                </td>
               </tr>
             );
           })}
@@ -115,18 +131,25 @@ export default function HoursDashboard({ weekData, onSave }: HoursDashboardProps
             <td colSpan={4} className="border border-amber-400 px-4 py-2 text-right">
               Weekly Total
             </td>
-            <td className="border border-amber-400 px-4 py-2">{weeklyTotalHours.toFixed(2)}</td>
-            <td className="border border-amber-400 px-4 py-2" colSpan={2}>Total Net Pay</td>
-            <td className="border border-amber-400 px-4 py-2">${weeklyNetPay.toFixed(2)}</td>
+            <td className="border border-amber-400 px-4 py-2" data-testid="weekly-total-hours">
+              {weeklyTotalHours.toFixed(2)}
+            </td>
+            <td className="border border-amber-400 px-4 py-2" colSpan={2}>
+              Total Net Pay
+            </td>
+            <td className="border border-amber-400 px-4 py-2" data-testid="weekly-net-pay">
+              ${weeklyNetPay.toFixed(2)}
+            </td>
           </tr>
         </tbody>
       </table>
       <button
-      onClick={handleSaveClick}
-      className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500"
-    >
-      💾 Save Week
-    </button>
+        onClick={handleSaveClick}
+        data-testid="save-button"
+        className="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500"
+      >
+        💾 Save Week
+      </button>
     </div>
   );
 }

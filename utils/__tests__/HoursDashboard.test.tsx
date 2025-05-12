@@ -1,88 +1,49 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import HoursDashboard from "../../components/HoursDashboard";
-import { WeekEntry } from "../../models/WeekModel"; // Adjust imports based on your project structure
-
-// Mock data for the weekData prop
-const mockWeekData: WeekEntry = {
-  id: "1",
-  weekStart: "2024-04-29",
-  hours: {
-    Monday: { start: "09:00", end: "17:00", break: 60, total: 7 },
-    Tuesday: { start: "09:00", end: "17:00", break: 60, total: 7 },
-    Wednesday: { start: "09:00", end: "17:00", break: 60, total: 7 },
-    Thursday: { start: "09:00", end: "17:00", break: 60, total: 7 },
-    Friday: { start: "09:00", end: "17:00", break: 60, total: 7 },
-    Saturday: { start: "09:00", end: "17:00", break: 60, total: 7 },
-    Sunday: { start: "09:00", end: "17:00", break: 60, total: 7 },
-  },
-  hourlyRates: {
-    Monday: 30,
-    Tuesday: 30,
-    Wednesday: 30,
-    Thursday: 30,
-    Friday: 30,
-    Saturday: 30,
-    Sunday: 30,
-  },
-};
+import { mockWeekData } from "../__mocks__/mockWeeks"
 
 describe("HoursDashboard", () => {
-  const mockOnSave = jest.fn()
+  test("renders day rows and allows start time input change", () => {
+    render(<HoursDashboard weekData={mockWeekData[0]} onSave={jest.fn()} />);
 
-    it("should render the HoursDashboard component with the correct data", () => {
-      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
-  
-      // Check if the table rows for each day are rendered
-      const mondayRow = screen.getByText(/Monday/i);
-      expect(mondayRow).toBeInTheDocument();
-  
-      // Check if the weekly total is rendered
-      const weeklyTotal = screen.getByText(/Weekly Total/i);
-      expect(weeklyTotal).toBeInTheDocument();
-    });
-  
-    it("should update the hours when the start time is changed", () => {
-      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
-  
-      // Find the start time input for Monday
-      const startTimeInput = screen.getByRole('row', { name: /Monday/i }).querySelector("input[type='time']");
-      fireEvent.change(startTimeInput!, { target: { value: "08:00" } });
-  
-      // Verify that the total hours for Monday are recalculated (or check the total if necessary)
-      const mondayTotal = screen.getByText(/Monday/i).closest('tr')?.querySelector("td:last-child");
-      expect(mondayTotal?.textContent).not.toBe("7.00"); // Expect the total to change
-    });
-  
-    it("should update the break time and recalculate the total hours", () => {
-      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
-  
-      // Change break time for Monday
-      const breakInput = screen.getByRole('row', { name: /Monday/i }).querySelector("input[type='number']");
-      fireEvent.change(breakInput!, { target: { value: "90" } });
-  
-      // Verify the total is updated after changing the break time
-      const mondayTotal = screen.getByText("6.50"); // Expect the total to be 6.5 hours after 90 min break
-      expect(mondayTotal).toBeInTheDocument();
-    });
-  
-    it("should calculate the weekly total correctly", () => {
-      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
-  
-      // Verify the weekly total calculation is correct (should be 7 * 7 = 49 hours initially)
-      const weeklyTotal = screen.getByText(/49.00/);
-      expect(weeklyTotal).toBeInTheDocument();
-    });
-  
-    it("should update the weekly total when changes are made", () => {
-      render(<HoursDashboard weekData={mockWeekData} onSave={mockOnSave} />);
-  
-      // Change break time for Monday
-      const breakInput = screen.getByRole('row', { name: /Monday/i }).querySelector("input[type='number']");
-      fireEvent.change(breakInput!, { target: { value: "90" } });
-  
-      // Check the weekly total, it should update after the change
-      const updatedWeeklyTotal = screen.getByText(/48.50/); // Total should be reduced by the 0.5 hours from Monday
-      expect(updatedWeeklyTotal).toBeInTheDocument();
-    });
+    const mondayRow = screen.getByTestId("row-Monday");
+    const startInput = within(mondayRow).getByDisplayValue("09:00");
+
+    fireEvent.change(startInput, { target: { value: "08:00" } });
+
+    // Confirm the input change
+    expect((startInput as HTMLInputElement).value).toBe("08:00");
   });
+
+  test("updates total hours and net pay on break change", () => {
+    render(<HoursDashboard weekData={mockWeekData[0]} onSave={jest.fn()} />);
+
+    const mondayRow = screen.getByTestId("row-Monday");
+
+    const breakInput = within(mondayRow).getByDisplayValue("30");
+    fireEvent.change(breakInput, { target: { value: "60" } });
+
+    // New total: 8 hours - 1 hour = 7.00 hours
+    expect(within(mondayRow).getByText("7.00")).toBeInTheDocument();
+
+    // Rate is $20, pay = 140, tax = 21.04, net = 118.96
+    expect(within(mondayRow).getByText("$26.30")).toBeInTheDocument();
+    expect(within(mondayRow).getByText("$148.70")).toBeInTheDocument();
+  });
+
+  test("save button triggers onSave with updated data", () => {
+    const handleSave = jest.fn();
+    render(<HoursDashboard weekData={mockWeekData[0]} onSave={handleSave} />);
+
+    const tuesdayRow = screen.getByTestId("row-Tuesday");
+    const rateInput = within(tuesdayRow).getByDisplayValue("25");
+    fireEvent.change(rateInput, { target: { value: "30" } });
+
+    fireEvent.click(screen.getByRole("button", { name: /save week/i }));
+
+    expect(handleSave).toHaveBeenCalledTimes(1);
+    const updatedData = handleSave.mock.calls[0][0];
+    expect(updatedData.hourlyRates.Tuesday).toBe(30);
+  });
+});

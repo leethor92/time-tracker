@@ -1,55 +1,20 @@
 import Link from "next/link";
-import React from "react";
-import { calculateWeeklyNetPay } from "../models/WeekModel";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { calculateWeeklyNetPay, WeekEntry } from "../models/WeekModel";
 
 export default function WeeklyDashboard() {
-  // Sample weekly data
-  const weeklyData = [
-    {
-      id: 1,
-      weekStart: "2024-04-29",
-      hours: {
-        Monday: { start: "", end: "", break: 0, total: 8 },
-        Tuesday: { start: "", end: "", break: 0, total: 7 },
-        Wednesday: { start: "", end: "", break: 0, total: 8 },
-        Thursday: { start: "", end: "", break: 0, total: 7 },
-        Friday: { start: "", end: "", break: 0, total: 8 },
-        Saturday: { start: "", end: "", break: 0, total: 0 },
-        Sunday: { start: "", end: "", break: 0, total: 0 }
-      },
-      hourlyRates: {
-        Monday: 30,
-        Tuesday: 30,
-        Wednesday: 30,
-        Thursday: 30,
-        Friday: 30,
-        Saturday: 30,
-        Sunday: 30
-      }
-    },
-    {
-      id: 2,
-      weekStart: "2024-05-06",
-      hours: {
-        Monday: { start: "", end: "", break: 0, total: 8 },
-        Tuesday: { start: "", end: "", break: 0, total: 7 },
-        Wednesday: { start: "", end: "", break: 0, total: 8 },
-        Thursday: { start: "", end: "", break: 0, total: 7 },
-        Friday: { start: "", end: "", break: 0, total: 8 },
-        Saturday: { start: "", end: "", break: 0, total: 0 },
-        Sunday: { start: "", end: "", break: 0, total: 0 }
-      },
-      hourlyRates: {
-        Monday: 30,
-        Tuesday: 30,
-        Wednesday: 30,
-        Thursday: 30,
-        Friday: 30,
-        Saturday: 30,
-        Sunday: 30
-      }
-    }
-  ];
+  const [weeklyData, setWeeklyData] = useState<WeekEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios.get("/api/weeks").then((res) => {
+      setWeeklyData(res.data);
+      setLoading(false);
+    });
+  }, [])
+
+  if (loading) return <p>Loading weeks...</p>;
 
   return (
     <div className="p-6">
@@ -61,7 +26,7 @@ export default function WeeklyDashboard() {
       </Link>
       <ul className="space-y-4">
         {weeklyData.map((week) => {
-          const weeklyTotal = Object.values(week.hours).reduce(
+          const weeklyTotal = Object.values(week.hours).reduce( 
             (sum, day) => sum + day.total,
             0
           );
@@ -71,10 +36,10 @@ export default function WeeklyDashboard() {
 
           return (
             <li
-              key={week.id}
+              key={week._id}
               className="bg-blue-50 p-4 rounded-lg shadow-md hover:bg-blue-200 transition-colors duration-300"
             >
-              <Link href={`/week/${week.id}`}>
+              <Link href={`/week/${week._id}`}>
                 <h2 className="text-xl font-semibold text-blue-800">
                   Week of {week.weekStart}
                 </h2>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router'
 import axios from 'axios';
 import { createEmptyWeek } from '../../models/WeekModel';
 import HoursDashboard from '../../components/HoursDashboard';
@@ -8,6 +9,7 @@ export default function NewWeekPage() {
   const monday = new Date(today);
   monday.setDate(today.getDate() - today.getDay() + 1); // Get this week's Monday
   const formattedMonday = monday.toISOString().split('T')[0];
+  const router = useRouter()
 
   const emptyWeek = createEmptyWeek(formattedMonday);
 
@@ -20,6 +22,7 @@ export default function NewWeekPage() {
     try {
       const response = await axios.post('/api/weeks', updatedWeekData);
       console.log('Week created successfully:', response.data);
+      router.push('/')
     } catch (error) {
       console.error('Error saving new week data:', error);
     }
