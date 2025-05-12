@@ -50,8 +50,16 @@ npm test
 
 ## ✅ Example Test Case
 
-```
-test("updates total hours and net pay on break change", () => { render(<HoursDashboard weekData={mockWeekData[0]} onSave={jest.fn()} />); const mondayRow = screen.getByTestId("row-Monday"); const breakInput = within(mondayRow).getByDisplayValue("30"); fireEvent.change(breakInput, { target: { value: "60" } }); expect(within(mondayRow).getByText("7.00")).toBeInTheDocument(); // Total hours expect(within(mondayRow).getByText("$21.04")).toBeInTheDocument(); // Tax expect(within(mondayRow).getByText("$118.96")).toBeInTheDocument(); // Net })'
+``` js
+test("updates total hours and net pay on break change", () => {
+    render(<HoursDashboard weekData={mockWeekData[0]} onSave={jest.fn()} />);
+    const mondayRow = screen.getByTestId("row-Monday");
+    const breakInput = within(mondayRow).getByDisplayValue("30");
+    fireEvent.change(breakInput, { target: { value: "60" } });
+    expect(within(mondayRow).getByText("7.00")).toBeInTheDocument(); // Total hours
+    expect(within(mondayRow).getByText("$21.04")).toBeInTheDocument(); // Tax
+    expect(within(mondayRow).getByText("$118.96")).toBeInTheDocument(); // Net
+  })'
 ```
 
 ## 🧑‍💻 Development
