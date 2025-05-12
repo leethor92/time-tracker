@@ -1,83 +1,95 @@
-## Example app using MongoDB
+# HoursDashboard
 
-[MongoDB](https://www.mongodb.com/) is a general purpose, document-based, distributed database built for modern application developers and for the cloud era. This example will show you how to connect to and use MongoDB as your backend for your Next.js app.
+A React-based weekly hours dashboard built with **Next.js** and **TypeScript**, allowing users to input and update their work hours, break durations, and view real-time calculations of total hours, gross pay, tax, and net pay. Data is stored in **MongoDB** via **Mongoose**. The app is fully tested using **React Testing Library** and **Jest**.
 
-If you want to learn more about MongoDB, visit the following pages:
+---
 
-- [MongoDB Atlas](https://mongodb.com/atlas)
-- [MongoDB Documentation](https://docs.mongodb.com/)
+## 🚀 Features
 
-## Deploy your own
+- 🗓 Displays work hours for a full week (Monday–Sunday)
+- ✏️ Editable start time, end time, and break duration
+- 📊 Automatically calculates:
+  - Total hours (adjusted for breaks)
+  - Gross pay (based on hourly rate per day)
+  - Estimated tax (~15%)
+  - Net pay (after tax)
+- 💾 MongoDB backend with Mongoose for persistence
+- ✅ Unit tested with React Testing Library
 
-Once you have access to the environment variables you'll need, deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) or preview live with [StackBlitz](https://stackblitz.com/github/vercel/next.js/tree/canary/examples/with-mongodb)
+---
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=with-mongodb&repository-name=with-mongodb&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-mongodb&integration-ids=oac_jnzmjqM10gllKmSrG0SGrHOH)
+## 📦 Tech Stack
 
-## How to use
+- [React](https://reactjs.org/)
+- [Next.js](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [Jest](https://jestjs.io/)
+- [React Testing Library](https://testing-library.com/)
 
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init), [Yarn](https://yarnpkg.com/lang/en/docs/cli/create/), or [pnpm](https://pnpm.io) to bootstrap the example:
+---
 
-```bash
-npx create-next-app --example with-mongodb with-mongodb-app
-```
+## 💵 Pay Calculation Logic
 
-```bash
-yarn create next-app --example with-mongodb with-mongodb-app
-```
+- **Total Hours** = `(end - start - break) / 60`
+- **Gross Pay** = `total hours × hourly rate`
+- **Tax** = `~15% of gross pay`
+- **Net Pay** = `gross pay - tax`
 
-```bash
-pnpm create next-app --example with-mongodb with-mongodb-app
-```
+Values are recalculated dynamically whenever the user modifies the break duration or time fields.
 
-## Configuration
+---
 
-### Set up a MongoDB database
-
-Set up a MongoDB database either locally or with [MongoDB Atlas for free](https://mongodb.com/atlas).
-
-### Set up environment variables
-
-Copy the `env.local.example` file in this directory to `.env.local` (which will be ignored by Git):
-
-```bash
-cp .env.local.example .env.local
-```
-
-Set each variable on `.env.local`:
-
-- `MONGODB_URI` - Your MongoDB connection string. If you are using [MongoDB Atlas](https://mongodb.com/atlas) you can find this by clicking the "Connect" button for your cluster.
-
-### Run Next.js in development mode
+## 🧪 Running Tests
 
 ```bash
 npm install
-npm run dev
-# or
-yarn install
-yarn dev
-# or
-pnpm install
-pnpm dev
+npm test
 ```
 
-Your app should be up and running on [http://localhost:3000](http://localhost:3000)! If it doesn't work, post on [GitHub discussions](https://github.com/vercel/next.js/discussions).
+## ✅ Example Test Case
 
-You will either see a message stating "You are connected to MongoDB" or "You are NOT connected to MongoDB". Ensure that you have provided the correct `MONGODB_URI` environment variable.
+test("updates total hours and net pay on break change", () => {
+  render(<HoursDashboard weekData={mockWeekData[0]} onSave={jest.fn()} />);
 
-When you are successfully connected, you can refer to the [MongoDB Node.js Driver docs](https://mongodb.github.io/node-mongodb-native/3.4/tutorials/collections/) for further instructions on how to query your database.
+  const mondayRow = screen.getByTestId("row-Monday");
+  const breakInput = within(mondayRow).getByDisplayValue("30");
 
-## Deploy on Vercel
+  fireEvent.change(breakInput, { target: { value: "60" } });
 
-You can deploy this app to the cloud with [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+  expect(within(mondayRow).getByText("7.00")).toBeInTheDocument(); // Total hours
+  expect(within(mondayRow).getByText("$21.04")).toBeInTheDocument(); // Tax
+  expect(within(mondayRow).getByText("$118.96")).toBeInTheDocument(); // Net
+});
 
-#### Deploy Your Local Project
+## 🧑‍💻 Development
 
-To deploy your local project to Vercel, push it to GitHub/GitLab/Bitbucket and [import to Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example).
+Environment Setup:
+You must define a .env file with the following:
+```ini
+MONGODB_URI=mongodb+srv://<your-connection-string>
+```
 
-**Important**: When you import your project on Vercel, make sure to click on **Environment Variables** and set them to match your `.env.local` file.
+## 🛠 Getting Started
 
-#### Deploy from Our Template
+# Clone the repo
+git clone https://github.com/leethor92/time-tracker.git
+cd time-tracker
 
-Alternatively, you can deploy using our template by clicking on the Deploy button below.
+# Install dependencies
+npm install
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?project-name=with-mongodb&repository-name=with-mongodb&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fwith-mongodb&integration-ids=oac_jnzmjqM10gllKmSrG0SGrHOH)
+# Run the development server
+npm run dev
+
+## 🔧 TODOs
+ Add error handling for invalid time inputs
+
+ Display cumulative weekly totals
+
+ Support custom tax logic or tax brackets
+
+ CRUD functionality for weekly records
+
+ Add user-specific data and authentication
